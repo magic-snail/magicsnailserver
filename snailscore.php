@@ -1,6 +1,6 @@
 <?php
 
-$scorepass = "xxxx";
+$scorepass = "xxx";
 $dbserver = "localhost";
 $dbuser = "magicsnail";
 $dbname = "magicsnail";
@@ -71,4 +71,4 @@ CREATE TABLE `scores` (
 http://tclinux.de/snailscore.php?password=xxx&mode=get
 http://tclinux.de/snailscore.php?password=xxx&mode=set&score=5600
 */
-?>
+
