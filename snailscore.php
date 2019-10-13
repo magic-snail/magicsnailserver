@@ -1,21 +1,15 @@
 <?php
 
-$scorepass = "xxx";
 $dbserver = "localhost";
 $dbuser = "magicsnail";
 $dbname = "magicsnail";
-$dbpass = "zzz";
-
-$password = $_GET["password"];
-if (!isset($password) || !($password == $scorepass)) {
-    die('Error 1');
-}
+$dbpass = "EArCzlHOgKhi19gM";
 
 $mymode = $_GET["mode"];
 if (!isset($mymode)) {
     die('Error 2');
 }
-if ($mymode != "get" && $mymode != "set") {
+if ($mymode != "get" && $mymode != "set" && $mymode != "redirecttobadge") {
     die('Error 3');
 }
 
@@ -53,7 +47,9 @@ if ($mymode == "set") {
     echo $place . "/" . $total;
 
 	$conn->close();
-} else {
+}
+
+if ($mymode == "get") {
     $conn = new mysqli($dbserver, $dbuser, $dbpass, $dbname);
     if ($conn->connect_error) {
         die("Error 62");
@@ -70,13 +66,31 @@ if ($mymode == "set") {
 	$conn->close();
 }
 
+if ($mymode == "redirecttobadge") {
+    $conn = new mysqli($dbserver, $dbuser, $dbpass, $dbname);
+    if ($conn->connect_error) {
+        die("Error 63");
+    }
+
+    $highestscore = $conn->prepare("select max(score) from scores");
+	$highestscore->execute();
+	$highestscore->bind_result($score);
+	$highestscore->fetch();
+	$highestscore->close();
+
+    header('Location: https://img.shields.io/badge/highscore-' . $score . '-success');
+
+	$allscores->close();
+	$conn->close();
+}
+
 /*
 CREATE TABLE `scores` (
   `timestamp` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `score` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-http://tclinux.de/snailscore.php?password=xxx&mode=get
-http://tclinux.de/snailscore.php?password=xxx&mode=set&score=5600
+http://tclinux.de/snailscore.php?mode=get
+http://tclinux.de/snailscore.php?mode=redirecttobadge
+http://tclinux.de/snailscore.php?mode=set&score=5600
 */
-
