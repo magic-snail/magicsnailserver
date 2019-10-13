@@ -34,16 +34,24 @@ if ($mymode == "set") {
 	$stmt->bind_param("d", $score);
 	$stmt->execute();
 	$stmt->close();
-	
+
 	$yourplace = $conn->prepare("select count(*) from scores where score > ?");
 	$yourplace->bind_param("d", $score);
 	$yourplace->execute();
 	$yourplace->bind_result($place);
 	$yourplace->fetch();
 	$yourplace->close();
-	
-	echo (int)$place+1;
-	
+
+	$place = (int)$place+1;
+
+	$totalscores = $conn->prepare("select count(*) from scores");
+	$totalscores->execute();
+	$totalscores->bind_result($total);
+	$totalscores->fetch();
+	$totalscores->close();
+
+    echo $place . "/" . $total;
+
 	$conn->close();
 } else {
     $conn = new mysqli($dbserver, $dbuser, $dbpass, $dbname);
@@ -53,7 +61,7 @@ if ($mymode == "set") {
 
 	$allscores = "select score from scores order by score desc LIMIT 12";
 	$allscores = $conn->query($allscores);
-	
+
 	while($scorerow = $allscores->fetch_assoc()) {
 		echo $scorerow["score"] . ";";
 	}
